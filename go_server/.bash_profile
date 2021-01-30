@@ -1,0 +1,2 @@
+export GH_BASIC_SECRET_ID="e8d3af2ac31f8ef2d49e2c6d05cc4ffb0e6cc85c"
+export GH_BASIC_CLIENT_ID="78a5bfe00657a701d94f"
