@@ -1,6 +1,6 @@
-testers = ["code", "Braille", "The quick brown fox jumps over the lazy dog",]
+__name__ = '__main__'
+asciiCode = ["code", "Braille", "The quick brown fox jumps over the lazy dog",]
 import re
-
 def getBraille(code):
   string = ''
   brillesLib = ["000000", "100000", "110000", "100100", "100110", "100010", "110100", "110110", "110010", "010100", "010110", "101000", "111000", "101100", "101110", "101010", "111100", "111110", "111010", "011100", "011110", "101001", "111001", "010111", "101101", "101111", "101011"]
@@ -29,10 +29,11 @@ def getTargetDate(asciiCode):
     if i == (len(asciiCode) - 1) or i == 54:
       break
   return output
-
 def solution(asciiCode):
-  return getTargetDate(asciiCode)
-  #print(getTargetDate(asciiCode))
-
-# for i, test in enumerate(testers):
-#   solution(test)
+    from usage import messages
+    print messages.PASSED+messages.HINT
+    for i, test in enumerate(asciiCode):
+        print getTargetDate(test)
+if __name__ == '__main__':
+    print 'solution name is main'
+    solution(asciiCode)
