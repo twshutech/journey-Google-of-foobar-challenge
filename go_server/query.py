@@ -6,5 +6,5 @@ r, content = h.request("https://journey-of-foobar-server.herokuapp.com",
   "PUT", body="This is text",
   headers={'content-type':'text/plain'} )
 h.close()
-print r['status']
-print r['content-type']
+print(r['status'])
+print(r['content-type'])
