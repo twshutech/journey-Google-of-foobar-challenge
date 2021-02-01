@@ -27,16 +27,16 @@ challenges = (
 
 
 def command(status):
-    cmd = raw_input()
+    cmd = input()
     if cmd == 'request':
         file = './'+challenges[status]+'/README.md'
         r = open(file, 'r')
-        print 'file',r.read()
+        print('file',r.read())
 
 
 def main():
     status = 0
-    print help_msg
+    print(help_msg)
     command(status)
 
 if __name__ == "__main__":
