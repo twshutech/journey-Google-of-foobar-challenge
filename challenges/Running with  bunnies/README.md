@@ -20,12 +20,12 @@ For instance, in the case of
 and a time limit of 1, the five inner array rows designate the starting point, bunny 0, bunny 1, bunny 2, and the bulkhead door exit respectively. You could take the path:
 
 Start End Delta Time Status
-    -   0     -    1 Bulkhead initially open
-    0   4    -1    2
-    4   2     2    0
-    2   4    -1    1
-    4   3     2   -1 Bulkhead closes
-    3   4    -1    0 Bulkhead reopens; you and the bunnies exit
+    -   0    -    1     Bulkhead initially open
+    0   4   -1    2
+    4   2    2    0
+    2   4   -1    1
+    4   3    2   -1     Bulkhead closes
+    3   4   -1    0     Bulkhead reopens; you and the bunnies exit
 
 With this solution, you would pick up bunnies 1 and 2. This is the best combination for this space station hallway, so the solution is [1, 2].
 
