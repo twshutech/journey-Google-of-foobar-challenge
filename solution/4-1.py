@@ -50,6 +50,11 @@ class attr:
   # If you still have time and there are unpicked bunnies out there.
   def next(self):
 
+    for i,time in enumerate(self.row):
+      if i != self.rowat:
+        print('i',i,' took ', time, self.rowat)
+
+
     if self.minat()-1 not in self.collections:
       # Least cost equal to guess and have not collect the bunnies.
       self.rowat = self.minat()
@@ -128,12 +133,12 @@ print(solution([[0, 2, 2, 2, -1], [9, 0, 2, 2, -1], [9, 3, 0, 2, -1], [9, 3, 2, 
 # 1,4,1,0   2,4,1,0
 # since it hits the time limitation and no negtive time delay token in the matrix, return result as [0,1]
 
-# Ideal case
-if len(self.collections) != len(matrix)-2:            # Bunnies all escaped before gate closed, subtract 2 for head and tail.
-  if self.timelimit > self.mintime:                   # Either visited or not, cost of time still affordable.
-    if self.minat() - 1 not in self.collections:      # Grab bunnies.
-    else:                                             # No bunnies.
-  else:                                               # Cannot afford the cost of time.
+# # Ideal case
+# if len(self.collections) != len(matrix)-2:            # Bunnies all escaped before gate closed, subtract 2 for head and tail.
+#   if self.timelimit > self.mintime:                   # Either visited or not, cost of time still affordable.
+#     if self.minat() - 1 not in self.collections:      # Grab bunnies.
+#     else:                                             # No bunnies.
+#   else:                                               # Cannot afford the cost of time.
 
 
 
@@ -147,5 +152,3 @@ if len(self.collections) != len(matrix)-2:            # Bunnies all escaped befo
 # 101
 # 110
 # 111
-
-
