@@ -1,3 +1,19 @@
+class bcolors:
+  HEADER = '\033[95m'
+  OKBLUE = '\033[94m'
+  OKGREEN = '\033[92m'
+  WARNING = '\033[93m'
+  FAIL = '\033[91m'
+  ENDC = '\033[0m'
+
+  def disable(self):
+    self.HEADER = ''
+    self.OKBLUE = ''
+    self.OKGREEN = ''
+    self.WARNING = ''
+    self.FAIL = ''
+    self.ENDC = ''
+
 # [
 # [0,  1, 10, 10, 10],
 # [10, 0,  1,  1,  2],
@@ -7,7 +23,6 @@
 # ]
 # 7
 
-
 # Start  End  Delta Time Status
 #     -   0     -    7   Bulkhead initially open
 #     0   1     1    6
@@ -16,26 +31,27 @@
 #     1   3     1    3
 #     3   1     1    2   Return to bunny 1, since bunny 3 does not have potential.
 #     1   4     2    0   The bunnies exit.
+getmin = lambda item:item[1]
 
 def getless(row, dajavu, graph):
   num = {'index':row.index(0), 'cost': float('inf'),'dajavu': dajavu}
   for i, node in enumerate(row):
-    if 0 < i < graph.edge-1:
+    if 0 < i < graph.edge:
       if graph.distances[i-1][1] >= node and node != 0:
         graph.distances[i-1][1] = node
         graph.distances[i-1][0] = row.index(0)
+    # if (node < num['cost'] and node != 0) and i not in dajavu and i != 0:
+    #   num['cost'] = node
+    #   num['index'] = i
+  # print(graph.distances.values())
+  # print(num['index'])
+  for destination, path in enumerate(graph.distances.values()):
+    if path[0] == num['index']:
+      # print('destination',destination,'path',path)
+      num['index'] = destination+1
+      num['cost'] = path[1]
+      break
 
-    # if node != 0 and str(i) in dajavu:
-    #   print('special case',i,node)
-      # num['cost'] = node
-      # num['index'] = i
-    if (node < num['cost'] and node != 0) and str(i) not in dajavu and i != 0:
-      # print('regular concern',i,node)
-      num['cost'] = node
-      num['index'] = i
-  # print(num)
-  print(graph.distances)
-  print('')
   return num
 
 class graphic:
@@ -45,27 +61,29 @@ class graphic:
     self.edge = len(times)
 
   def initdis(self):
-    for bunny in xrange(len(self.graph) - 2):
+    for bunny in range(len(self.graph) - 1):
       self.distances[bunny] = [0, float('inf')] #from, min cost
 
 def solution(times, time_limit):
   graph = graphic(times)
   graph.initdis()
-  print(graph.distances)
+  # print(graph.distances)
   least = ''
   s = 0
   node = []
+  flow = set()
   budget = time_limit
   for row in times:
-    item = getless(row, least, graph)
+    item = getless(row, flow, graph)
+    flow.add(item['index'])
     try:
-      print(graph.distances[s])
+      d = graph.distances[s]
+      print('from '+str(d[0])+' to '+ str(s+1)+' cost '+str(d[1]))
     except KeyError:
       return
     finally:
-
-
-      print('now',s,'then',item['index'])
+      print('')
+      # print('now',s,'then',item['index'])
     least += str(item['index'])
     budget -= times[s][item['index']]
     s = item['index']
