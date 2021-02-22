@@ -73,20 +73,23 @@ def solution(times, time_limit):
   node = []
   flow = set()
   budget = time_limit
-  for row in times:
-    item = getless(row, flow, graph)
-    flow.add(item['index'])
-    try:
-      d = graph.distances[s]
-      print('from '+str(d[0])+' to '+ str(s+1)+' cost '+str(d[1]))
-    except KeyError:
-      return
-    finally:
-      print('')
-      # print('now',s,'then',item['index'])
-    least += str(item['index'])
-    budget -= times[s][item['index']]
-    s = item['index']
+  for i in xrange(graph.edge):
+    for j in xrange(graph.edge):
+      print times[i][j]
+  # for row in times:
+  #   item = getless(row, flow, graph)
+  #   flow.add(item['index'])
+  #   try:
+  #     d = graph.distances[s]
+  #     print('from '+str(d[0])+' to '+ str(s+1)+' cost '+str(d[1]))
+  #   except KeyError:
+  #     return
+  #   finally:
+  #     print('')
+  #     # print('now',s,'then',item['index'])
+  #   least += str(item['index'])
+  #   budget -= times[s][item['index']]
+  #   s = item['index']
   for i in least:
     i = int(i)
     time_limit -= times[s][i]
@@ -96,7 +99,6 @@ def solution(times, time_limit):
     if time_limit >= 0 and i not in [0, len(times)-1]:
       node.append(i-1)
   return node
-
 
 l1 = [[0, 2, 2, 2, -1], [9, 0, 2, 2, -1], [9, 3, 0, 2, -1], [9, 3, 2, 0, -1], [9, 3, 2, 2, 0]]
 l2 = [[0,  1,  5,  5,  2],[10, 0,  2,  6,  10],[10, 10, 0,  1,  5],[10, 10, 10, 0,  1],[10, 10, 10, 10, 0]]
