@@ -38,12 +38,13 @@ def getless(row, dajavu, graph):
   for i, node in enumerate(row):
     if 0 < i < graph.edge:
       if graph.distances[i-1][1] >= node and node != 0:
+        # if graph.distances[i-1][1] == float('inf'):
         graph.distances[i-1][1] = node
-        graph.distances[i-1][0] = row.index(0)
+        graph.distances[i-1][0].add(row.index(0))
     # if (node < num['cost'] and node != 0) and i not in dajavu and i != 0:
     #   num['cost'] = node
     #   num['index'] = i
-  # print(graph.distances.values())
+  print(graph.distances)
   # print(num['index'])
   for destination, path in enumerate(graph.distances.values()):
     if path[0] == num['index']:
@@ -62,34 +63,51 @@ class graphic:
 
   def initdis(self):
     for bunny in range(len(self.graph) - 1):
-      self.distances[bunny] = [0, float('inf')] #from, min cost
+      self.distances[bunny] = [set([]), float('inf')] #from, min cost
+
+  def relationtree(self):
+    print self.distances.keys()
+    for index, i in enumerate(self.distances.values()):
+      print index, i
+      for j in i[0]:
+        print 'j',j
+        self.graph[j][index+1] = i[1]
+    for gr in self.graph:
+      print gr
+
+
 
 def solution(times, time_limit):
   graph = graphic(times)
   graph.initdis()
-  # print(graph.distances)
   least = ''
   s = 0
   node = []
   flow = set()
   budget = time_limit
-  for i in xrange(graph.edge):
-    for j in xrange(graph.edge):
-      print times[i][j]
-  # for row in times:
-  #   item = getless(row, flow, graph)
-  #   flow.add(item['index'])
-  #   try:
-  #     d = graph.distances[s]
-  #     print('from '+str(d[0])+' to '+ str(s+1)+' cost '+str(d[1]))
-  #   except KeyError:
-  #     return
-  #   finally:
-  #     print('')
-  #     # print('now',s,'then',item['index'])
-  #   least += str(item['index'])
-  #   budget -= times[s][item['index']]
-  #   s = item['index']
+  # for i in xrange(graph.edge):
+  #   for j in xrange(graph.edge):
+  #     print times[i][j]
+  for row in times:
+    item = getless(row, flow, graph)
+    flow.add(item['index'])
+    try:
+      d = graph.distances[s]
+      # print('from '+str(d[0])+' to '+ str(s+1)+' cost '+str(d[1]))
+    except KeyError:
+      return
+    finally:
+      print('')
+      # print('now',s,'then',item['index'])
+    least += str(item['index'])
+    budget -= times[s][item['index']]
+    s = item['index']
+  print(graph.relationtree())
+
+
+
+
+
   for i in least:
     i = int(i)
     time_limit -= times[s][i]
