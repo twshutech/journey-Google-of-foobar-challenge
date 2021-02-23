@@ -32,53 +32,68 @@ class bcolors:
 #     3   1     1    2   Return to bunny 1, since bunny 3 does not have potential.
 #     1   4     2    0   The bunnies exit.
 getmin = lambda item:item[1]
+iteminside = lambda item,l: True if item in l else False
 
 def getless(row, dajavu, graph):
-  num = {'index':row.index(0), 'cost': float('inf'),'dajavu': dajavu}
+  num = {'index':row.index(0), 'costs': float('inf'),'dajavu': dajavu}
   for i, node in enumerate(row):
-    if 0 < i < graph.edge:
-      if graph.distances[i-1][1] >= node and node != 0:
-        # if graph.distances[i-1][1] == float('inf'):
-        graph.distances[i-1][1] = node
-        graph.distances[i-1][0].add(row.index(0))
-    # if (node < num['cost'] and node != 0) and i not in dajavu and i != 0:
-    #   num['cost'] = node
+    if 0 < i < graph.edge and node != 0:
+      if graph.costs[i-1] > node:
+        graph.costs[i-1] = node
+        graph.distances[i-1] = set([row.index(0)])
+      elif graph.costs[i-1] == node:
+        graph.distances[i-1].add(row.index(0))
+
+    # if (node < num['costs'] and node != 0) and i not in dajavu and i != 0:
+    #   num['costs'] = node
     #   num['index'] = i
-  print(graph.distances)
+  # print(graph.distances, graph.costs)
   # print(num['index'])
-  for destination, path in enumerate(graph.distances.values()):
-    if path[0] == num['index']:
-      # print('destination',destination,'path',path)
-      num['index'] = destination+1
-      num['cost'] = path[1]
-      break
+  # for destination, path in enumerate(graph.distances.values()):
+  #   if path[0] == num['index']:
+  #     # print('destination',destination,'path',path)
+  #     num['index'] = destination+1
+  #     num['costs'] = path[1]
+  #     break
 
   return num
 
 class graphic:
-  def __init__(self, times):
+  def __init__(self, times, time_limit):
     self.graph = times
     self.distances = dict()
     self.edge = len(times)
+    self.fromto = 0
+    self.budget = time_limit
+    self.dajavu = set([])
+    self.costs = [float('inf')] * (len(times)-1)
 
   def initdis(self):
     for bunny in range(len(self.graph) - 1):
-      self.distances[bunny] = [set([]), float('inf')] #from, min cost
+      self.distances[bunny] = set([]) #from, min costs
 
   def relationtree(self):
-    print self.distances.keys()
-    for index, i in enumerate(self.distances.values()):
-      print index, i
-      for j in i[0]:
-        print 'j',j
-        self.graph[j][index+1] = i[1]
-    for gr in self.graph:
-      print gr
-
-
+    print(self.costs)
+    print([list(item) for item in self.distances.values()])
+    # while self.fromto in
+    # print(self.fromto)
+    # for index, shorten in enumerate(self.distances.values()):
+    #   if self.fromto in shorten[0]:
+    #     print(index, shorten)
+    #     self.fromto = index+1
+    #     self.budget -= shorten[1]
+    #     self.dajavu.add(index)
+    #     break
+    # if self.budget < 0:
+    #   return self.dajavu
+    # if len(self.dajavu)+2 < self.edge:
+    #   return self.relationtree()
+    # else:
+    #   return self.dajavu
+    return False
 
 def solution(times, time_limit):
-  graph = graphic(times)
+  graph = graphic(times, time_limit)
   graph.initdis()
   least = ''
   s = 0
@@ -93,7 +108,7 @@ def solution(times, time_limit):
     flow.add(item['index'])
     try:
       d = graph.distances[s]
-      # print('from '+str(d[0])+' to '+ str(s+1)+' cost '+str(d[1]))
+      # print('from '+str(d[0])+' to '+ str(s+1)+' costs '+str(d[1]))
     except KeyError:
       return
     finally:
@@ -103,10 +118,6 @@ def solution(times, time_limit):
     budget -= times[s][item['index']]
     s = item['index']
   print(graph.relationtree())
-
-
-
-
 
   for i in least:
     i = int(i)
