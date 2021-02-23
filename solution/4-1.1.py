@@ -34,100 +34,64 @@ class bcolors:
 getmin = lambda item:item[1]
 iteminside = lambda item,l: True if item in l else False
 
-def getless(row, dajavu, graph):
-  num = {'index':row.index(0), 'costs': float('inf'),'dajavu': dajavu}
-  for i, node in enumerate(row):
-    if 0 < i < graph.edge and node != 0:
-      if graph.costs[i-1] > node:
-        graph.costs[i-1] = node
-        graph.distances[i-1] = set([row.index(0)])
-      elif graph.costs[i-1] == node:
-        graph.distances[i-1].add(row.index(0))
-
-    # if (node < num['costs'] and node != 0) and i not in dajavu and i != 0:
-    #   num['costs'] = node
-    #   num['index'] = i
-  # print(graph.distances, graph.costs)
-  # print(num['index'])
-  # for destination, path in enumerate(graph.distances.values()):
-  #   if path[0] == num['index']:
-  #     # print('destination',destination,'path',path)
-  #     num['index'] = destination+1
-  #     num['costs'] = path[1]
-  #     break
-
-  return num
+def getless(row, graph):
+  print row
+  for i in xrange(graph.edge):
+    node = row[i]
+    print i
+    if graph.edge >= i >= 0 and node != 0:
+      if graph.costs[i] > node:
+        graph.costs[i] = node
+        graph.distances[i] = set([row.index(0)])
+      elif graph.costs[i] == node:
+        graph.distances[i].add(row.index(0))
 
 class graphic:
-  def __init__(self, times, time_limit):
+  def __init__(self, times, time_limit, fromto):
     self.graph = times
-    self.distances = dict()
-    self.edge = len(times)
-    self.fromto = 0
     self.budget = time_limit
+    self.fromto = fromto
+    self.distances = [set()]*len(times)
+    self.edge = len(times)
     self.dajavu = set([])
-    self.costs = [float('inf')] * (len(times)-1)
-
-  def initdis(self):
-    for bunny in range(len(self.graph) - 1):
-      self.distances[bunny] = set([]) #from, min costs
+    self.costs = [float('inf')] * len(times)
 
   def relationtree(self):
-    print(self.costs)
-    print([list(item) for item in self.distances.values()])
-    # while self.fromto in
-    # print(self.fromto)
-    # for index, shorten in enumerate(self.distances.values()):
-    #   if self.fromto in shorten[0]:
-    #     print(index, shorten)
-    #     self.fromto = index+1
-    #     self.budget -= shorten[1]
-    #     self.dajavu.add(index)
-    #     break
-    # if self.budget < 0:
-    #   return self.dajavu
-    # if len(self.dajavu)+2 < self.edge:
-    #   return self.relationtree()
-    # else:
-    #   return self.dajavu
-    return False
+    # print(self.costs)
+    # print([list(item) for item in self.distances])
+    try:
+      for index in xrange(len(self.distances)):
+        if self.fromto in self.distances[index] and self.fromto not in self.dajavu:
+          self.fromto = index
+          self.dajavu.add(index)
+          break
+
+
+      print(self.fromto,self.distances)
+    except KeyError:
+      return self.dajavu
+    except RuntimeError:
+      return self.dajavu
+    finally:
+      # if len(self.dajavu) > self.edge:
+      return self.costs
+
 
 def solution(times, time_limit):
-  graph = graphic(times, time_limit)
-  graph.initdis()
-  least = ''
-  s = 0
-  node = []
-  flow = set()
-  budget = time_limit
-  # for i in xrange(graph.edge):
-  #   for j in xrange(graph.edge):
-  #     print times[i][j]
-  for row in times:
-    item = getless(row, flow, graph)
-    flow.add(item['index'])
-    try:
-      d = graph.distances[s]
-      # print('from '+str(d[0])+' to '+ str(s+1)+' costs '+str(d[1]))
-    except KeyError:
-      return
-    finally:
-      print('')
-      # print('now',s,'then',item['index'])
-    least += str(item['index'])
-    budget -= times[s][item['index']]
-    s = item['index']
-  print(graph.relationtree())
+  graph = graphic(times, time_limit, 0)
 
-  for i in least:
-    i = int(i)
-    time_limit -= times[s][i]
-    s = i
-    if i != len(times)-1 and (times[s][i]>times[s][-1] or time_limit == times[s][-1]):
-      time_limit -= times[s][-1]
-    if time_limit >= 0 and i not in [0, len(times)-1]:
-      node.append(i-1)
-  return node
+  # getless(times[graph.fromto], graph)
+  # graph.relationtree()
+  # try:
+  # except RuntimeError:
+  #   return graph.costs
+  # finally:
+  #   return graph.distances
+
+  for edge in xrange(graph.edge):
+    row = times[edge]
+    getless(row, graph)
+  print graph.relationtree()
 
 l1 = [[0, 2, 2, 2, -1], [9, 0, 2, 2, -1], [9, 3, 0, 2, -1], [9, 3, 2, 0, -1], [9, 3, 2, 2, 0]]
 l2 = [[0,  1,  5,  5,  2],[10, 0,  2,  6,  10],[10, 10, 0,  1,  5],[10, 10, 10, 0,  1],[10, 10, 10, 10, 0]]
