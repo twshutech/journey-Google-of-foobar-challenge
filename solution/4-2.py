@@ -4,7 +4,8 @@ import colourtheme
 bcolors = colourtheme.bcolors()
 bcolors.ENDC
 powsqrt = lambda n: pow(n, 2)
-
+greater = lambda n: n > 0
+# towall = lambda
 class triangle():
   def __init__(self, dimensions, your_position, trainer_position, distance):
     self.y = your_position
@@ -26,12 +27,14 @@ class graph:
     self.ans = set([])
     self.diffwidth = abs(trainer_position[0]-your_position[0])
     self.diffheight = abs(trainer_position[1]-your_position[1])
+    # go left and go right
+    self.wallx = [your_position[0], -1 * (dimensions[0]-your_position[0])]
+    # go up and go down
+    self.wally = [your_position[1], -1 * (dimensions[1]-your_position[1])]
 
   def place_location(self):
     self.g[self.y[1]][self.y[0]] = 'M'
     self.g[self.t[1]][self.t[0]] = 'T'
-    for i in self.g:
-      print ' '.join(i)
 
   def rangex(self, delta):
     if self.y[0]+delta > self.width:
@@ -55,31 +58,37 @@ class graph:
         deltax = self.rangex(i)
         deltay = self.rangey(j)
         # print (i, j)
-        if deltax == self.diffwidth and deltay == self.diffheight:
-          print (deltax, deltay),'from',(i, j)
-        if math.sqrt(powsqrt(deltax)+powsqrt(deltay)) <= self.distance:
+        # if deltax == self.diffwidth and deltay == self.diffheight:
+        #   print (deltax, deltay),'from',(i, j)
+        # Add the vectors within the distance.
+        if math.hypot(deltax, deltay) <= self.distance:
           self.possibilities.add((i, j))
-    # for p in sorted(self.possibilities):
-    #   if self.rangex(self.y[0]+p[0]) == self.t[0] and self.rangey(self.y[1]+p[1]) == self.t[1]:
-    #     print self.rangex(p[0]), self.rangey(p[1]), 'from', p
-        # if p in [(1, 0), (1, 2), (1, -2), (3, 2), (3, -2), (-3, 2), (-3, -2)]:
-        # print bcolors.OKGREEN,p ,bcolors.ENDC
-      # else:
-      #   print p
-    #       x =
-    #       y =
-    #       if x == 2 and y == 1:
-    #         print '21',x,y,deltax,deltay,self.width,self.height
+    for inex, vector in enumerate(self.possibilities):
+      #vector is the values of delta x and delt9a y as array.
+      temp = []
+      for i, v in enumerate(vector):
+        #i == 0 as x else y, negative v as move up or left else down, right.ji
+        collisson = self.wallx if i == 0 else self.wally
+        wall = self.width if i == 0 else self.height
+        print "abs(collisson[1])",abs(collisson[1]),' abs(v)', abs(v),'abs(collisson[0])',abs(collisson[0])
+        # if collisson[1] > abs(v) > 0:
+        #   print 'v',v
+        # else:
+        #   print 'self.bounce(v, collisson)',self.bounce(v, collisson)
+        destination = v if abs(collisson[1]) >= abs(v) or abs(v) >= abs(collisson[0])  else self.bounce(v, collisson)
+        temp.append(destination)
+      print vector,'->',temp
+      if inex == 10:
+        break
 
-    #       self.possibilities.add((x, y))
-    # for coord in sorted(self.possibilities):
-    #   if math.sqrt(powsqrt(coord[0])+ powsqrt(coord[1])) <= self.distance:
-    #     print coord
+  def bounce(self, coord, collision):
+    coord = coord + collision[1] if coord > collision[1] else coord + collision[0]
+    return coord
 
 def solution(dimensions, your_position, trainer_position, distance):
   possibility = 0
   g = graph(dimensions, your_position, trainer_position, distance)
-  g.place_location()
+  # g.place_location()
   g.possible()
   return possibility
 
