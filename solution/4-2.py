@@ -1,21 +1,9 @@
-
-import math
-import colourtheme
+import colourtheme, math
 bcolors = colourtheme.bcolors()
-bcolors.ENDC
-powsqrt = lambda n: pow(n, 2)
 
-class triangle():
+class vectors:
   def __init__(self, dimensions, your_position, trainer_position, distance):
-    self.y = your_position
-    self.t = trainer_position
-    self.width = dimensions[0]+1
-    self.height = dimensions[1]+1
-    self.diffwidth = abs(trainer_position[0]-your_position[0])
-    self.diffheight = abs(trainer_position[1]-your_position[1])
-
-class graph:
-  def __init__(self, dimensions, your_position, trainer_position, distance):
+    self.dimensions = dimensions
     self.g = [['_' for column in range(dimensions[0]+1)] for row in range(dimensions[1]+1)]
     self.y = your_position
     self.t = trainer_position
@@ -23,67 +11,42 @@ class graph:
     self.width = dimensions[0]+1
     self.height = dimensions[1]+1
     self.possibilities = set([])
-    self.ans = set([])
     self.diffwidth = abs(trainer_position[0]-your_position[0])
     self.diffheight = abs(trainer_position[1]-your_position[1])
-
-  def place_location(self):
-    self.g[self.y[1]][self.y[0]] = 'M'
-    self.g[self.t[1]][self.t[0]] = 'T'
-    for i in self.g:
-      print ' '.join(i)
-
-  def rangex(self, delta):
-    if self.y[0]+delta > self.width:
-      return delta+(self.y[0]-self.width)
-    elif self.y[0]+delta < 0:
-      return delta+(self.width-self.y[0])
-    else:
-      return delta
-
-  def rangey(self, delta):
-    if self.y[1]+delta > self.height:
-      return delta+(self.y[1]-self.height)
-    elif self.y[1]+delta < 0:
-      return delta+(self.height-self.y[1])
-    else:
-      return delta
+    self.l = [[1, 0], [1, 2], [1, -2], [3, 2], [3, -2], [-3, 2], [-3, -2]]
 
   def possible(self):
     for i in range(-1*self.distance,self.distance+1,1):
       for j in range(-1*self.distance,self.distance+1,1):
-        deltax = self.rangex(i)
-        deltay = self.rangey(j)
-        # print (i, j)
-        if deltax == self.diffwidth and deltay == self.diffheight:
-          print (deltax, deltay),'from',(i, j)
-        if math.sqrt(powsqrt(deltax)+powsqrt(deltay)) <= self.distance:
-          self.possibilities.add((i, j))
-    # for p in sorted(self.possibilities):
-    #   if self.rangex(self.y[0]+p[0]) == self.t[0] and self.rangey(self.y[1]+p[1]) == self.t[1]:
-    #     print self.rangex(p[0]), self.rangey(p[1]), 'from', p
-        # if p in [(1, 0), (1, 2), (1, -2), (3, 2), (3, -2), (-3, 2), (-3, -2)]:
-        # print bcolors.OKGREEN,p ,bcolors.ENDC
-      # else:
-      #   print p
-    #       x =
-    #       y =
-    #       if x == 2 and y == 1:
-    #         print '21',x,y,deltax,deltay,self.width,self.height
+        # deltax = self.rangex(i)
+        # deltay = self.rangey(j)
+        # if math.hypot(deltax, deltay) <= self.distance:
+        self.possibilities.add((i, j))
+    # print 'possibilities',self.possibilities
+    for delta_vector in self.possibilities:
+      temp = []
+      for index, v in enumerate(delta_vector):
+        dimension = self.dimensions[index] + 1
+        temp.append(self.bounce(v, dimension))
+      if temp[0] == self.diffwidth and temp[1] == self.diffheight:
+        if math.hypot(delta_vector[0], delta_vector[1]) <= self.distance:
+          if list(delta_vector) not in self.l:
+            # print 'distance is ',math.hypot(delta_vector[0], delta_vector[1]),'which is within',self.distance
+            print bcolors.WARNING,delta_vector,'->',temp,bcolors.ENDC,'\n'
 
-    #       self.possibilities.add((x, y))
-    # for coord in sorted(self.possibilities):
-    #   if math.sqrt(powsqrt(coord[0])+ powsqrt(coord[1])) <= self.distance:
-    #     print coord
+  def bounce(self, v, dimension):
+    if v >= dimension:
+      # print v,'>> ',dimension,' % 2',(v >> dimension) % 2
+      return (v >> dimension) % 2
+    else:
+      # print v,'% 2',v % 2
+      return v % 2
 
+# for vector in [[10,-7], [10,7], [-3,6], [1,-9], [1,0], [0,0]]:
 def solution(dimensions, your_position, trainer_position, distance):
-  possibility = 0
-  g = graph(dimensions, your_position, trainer_position, distance)
-  g.place_location()
-  g.possible()
-  return possibility
+  l = [[1, 0], [1, 2], [1, -2], [3, 2], [3, -2], [-3, 2], [-3, -2]]
+  print l
+  vector = vectors(dimensions, your_position, trainer_position, distance)
+  vector.possible()
 
 solution([3,2], [1,1], [2,1], 4)
-
-# [[1, 0], [1, 2], [1, -2], [3, 2], [3, -2], [-3, 2], [-3, -2]]
-# print([0 for i in range(6) if i%2 == 0 ])
