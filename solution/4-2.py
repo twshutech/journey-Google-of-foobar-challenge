@@ -4,7 +4,7 @@ bcolors = colourtheme.bcolors()
 class vectors:
   def __init__(self, dimensions, your_position, trainer_position, distance):
     self.dimensions = dimensions
-    self.g = [['_' for column in range(dimensions[0]+1)] for row in range(dimensions[1]+1)]
+    self.g = numpy.array([[0 for column in range(dimensions[0]+1)] for row in range(dimensions[1]+1)])
     self.y = your_position
     self.t = trainer_position
     self.distance = distance
@@ -25,14 +25,13 @@ class vectors:
             dimension = self.dimensions[index] + 1
             temp.append(self.bounce(v, dimension))
           self.possibilities.add((i, j))
-          # print 'temp',bcolors.WARNING,delta_vector,'->',temp,bcolors.ENDC,'\n'
           if temp[0] == self.diffwidth and temp[1] == self.diffheight:
-            # print 'same vector',bcolors.WARNING,delta_vector,'->',temp,bcolors.ENDC,'\n'
             if math.hypot(delta_vector[0], delta_vector[1]) <= self.distance:
               # if list(delta_vector) not in self.l:
                 # print 'distance is ',math.hypot(delta_vector[0], delta_vector[1]),'which is within',self.distance
               print '',bcolors.WARNING,delta_vector,'->',temp,bcolors.ENDC,'\n'
-    print 'possibilities',len(self.possibilities)
+    print 'possibilities',len(self.possibilities),'distances'
+    self.distances()
     # for delta_vector in self.possibilities:
 
   def bounce(self, v, dimension):
@@ -41,7 +40,10 @@ class vectors:
     else:
       return v % 2
 
-def distances():
+  def distances(self):
+    self.g[self.t[0]][self.t[1]] = 2
+    self.g[self.y[0]][self.y[1]] = 1
+    print numpy.asmatrix(self.g)
 
 
 def solution(dimensions, your_position, trainer_position, distance):
