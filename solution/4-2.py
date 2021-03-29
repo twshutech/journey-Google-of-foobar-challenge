@@ -2,16 +2,15 @@ import colourtheme, math, json
 import numpy as np
 bcolors = colourtheme.bcolors()
 # def distances():
-dis = lambda i,j,ti,tj:math.hypot(ti-i, tj-j)
+dis = lambda i,j,ti,tj:np.hypot(ti-i, tj-j)
 field = lambda i,j,ti,tj,m: np.inf if dis(i,j,ti,tj) > m else dis(i,j,ti,tj)
 highlight = lambda n: int(n) if n != np.inf else np.inf
 length = lambda i, j: abs(i-j)
 tonparray = lambda i: np.array(i)
 isreverse = lambda n: True if n % 2 != 0 else False
-axisdirection = lambda direction, l: [l[2]+l[0], l[1]+l[]] if direction < 0 else [l[3], l[1]]
+axisdirection = lambda direction, l: [l[2]+l[0], l[1]+l[0]] if direction < 0 else [l[3], l[1]]
 unit_vector = lambda vector:vector / np.linalg.norm(vector)
-
-
+vector_magnitude = lambda v: np.hypot(v[0], v[1])
 
 class vectors:
   def __init__(self, dimensions, your_position, trainer_position, distance):
@@ -37,13 +36,13 @@ class vectors:
 
   def get_relay(self, p):
     #The directions from the trainer's position to top, bottom, left, right.
-    directions = [tonparray([0, 1]), tonparray([0, -1]), tonparray([1, 0]), tonparray([-1, 0])]
+    directions = [tonparray([1, 1]), tonparray([1, -1]), tonparray([1, 1]), tonparray([-1, 1])]
     #From top, bottom, left, right to the trainer's position.
     up = np.array([0, length(p[1], 0)])
     bottom = np.array([0, length(self.dimensions[1], p[1])])
     left = np.array([length(p[0], 0), 0])
     right = np.array([length(self.dimensions[0], p[0]), 0])
-    return np.array([up, bottom, left, right]) * directions
+    return np.array([up+left, bottom+left, bottom+right, up+right]) * directions
 
   def rot(self, to):
     if to == 0:
@@ -54,6 +53,8 @@ class vectors:
   # [[j+i for j in range(-1*distance,distance+1,1)] for i in range(-1*distance,distance+1,1)]
 
   def possible(self):
+    vectors_list = np.array([(i,j) for j in range(self.distance) for i in range(self.distance)])
+    print vectors_list
     for i in range(-1*self.distance,self.distance+1,1):
       for j in range(-1*self.distance,self.distance+1,1):
         if math.hypot(i, j) <= self.distance: #Narrow the area for distance that beam could go.
@@ -62,21 +63,21 @@ class vectors:
           # temp = [self.bounce(i,), self.bounce(j, dimension, index)]
           for index, v in enumerate(delta_vector):
             dimension = self.dimensions[index]
-            temp.append(self.bounce(v, dimension, index))
-          if temp[0] == self.diffwidth and temp[1] == self.diffheight:
-            if math.hypot(delta_vector[0], delta_vector[1]) <= self.distance:
+            # temp.append(self.bounce(v, dimension, index))
+          # if temp[0] == self.diffwidth and temp[1] == self.diffheight:
+          #   if math.hypot(delta_vector[0], delta_vector[1]) <= self.distance:
               # print 'temp',temp
               # if list(delta_vector) not in self.l:
                 # print 'distance is ',math.hypot(delta_vector[0], delta_vector[1]),'which is within',self.distance
               # s = np.array(delta_vector)+ self.t
               # angle = np.arctan2(s[0],s[1])
               # angle = np.arctan2(i,j)
-              print i,j
-              angle = angle_between_two([i,0],[0,j])
-              if angle not in self.angles:
-                self.possibilities.add((i, j))
-              print '',bcolors.WARNING,delta_vector,'->',temp,bcolors.ENDC
-              self.angles.add(angle)
+              # print i,j
+              # angle = angle_between_two([i,0],[0,j])
+              # if angle not in self.angles:
+              #   self.possibilities.add((i, j))
+              # print '',bcolors.WARNING,delta_vector,'->',temp,bcolors.ENDC
+              # self.angles.add(angle)
               # print self.y+np.array(delta_vector),'\n'
     print bcolors.WARNING,len(self.possibilities),sorted(self.possibilities),bcolors.ENDC
     # print bcolors.OKGREEN,len(self.l),sorted(self.l),bcolors.ENDC
@@ -109,6 +110,15 @@ class vectors:
     else:
       return True
 
+  def projection(self):
+    print 'self.trainer',self.trainer
+    for v in self.trainer:
+      new_t = self.t + (2*v)
+      print self.t,'+',2*v*-1,'->',self.t + self.diff + (2*v),'\n'
+      print 'self from your position', new_t - self.y
+
+
+
 def solution(dimensions, your_position, trainer_position, distance):
   vector = vectors(dimensions, your_position, trainer_position, distance)
   # dic = vector.__dict__
@@ -116,14 +126,8 @@ def solution(dimensions, your_position, trainer_position, distance):
   # print(json.dumps(dic, indent = 4))
   vector.you = vector.get_relay(vector.y)
   vector.trainer = vector.get_relay(vector.t)
-  for v in vector.trainer:
-    new_t = vector.t + (2*v)
-    print vector.t,'+',2*v*-1,'->',vector.t + vector.diff + (2*v),'\n'
-    print 'vector from your position', new_t - vector.y
-
-  # vector.possible()
-  # for v in vector.possibilities:
-  #   vector.detect_collision(v)
+  vector.possible()
+  # vector.projection()
   # for dot in vector.possibilities:
   #   print dot,'->',dot[0] * dot[1]
   #   vector.test[dot[1]][dot[0]] = dot[0] * dot[1]
