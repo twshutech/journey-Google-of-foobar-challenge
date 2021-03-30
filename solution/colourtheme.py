@@ -1,4 +1,4 @@
-class bcolors:
+class colourtheme:
     def __init__(self):
         self.HEADER = '\033[95m'
         self.OKBLUE = '\033[94m'
@@ -14,3 +14,6 @@ class bcolors:
         self.WARNING = ''
         self.FAIL = ''
         self.ENDC = ''
+
+if __name__ == '__main__':
+    colourtheme()

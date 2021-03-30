@@ -1,6 +1,7 @@
 import colourtheme, math, json
 import numpy as np
-bcolors = colourtheme.bcolors()
+c = colourtheme.bcolors()
+
 # def distances():
 dis = lambda i,j,ti,tj:np.hypot(ti-i, tj-j)
 field = lambda i,j,ti,tj,m: np.inf if dis(i,j,ti,tj) > m else dis(i,j,ti,tj)
