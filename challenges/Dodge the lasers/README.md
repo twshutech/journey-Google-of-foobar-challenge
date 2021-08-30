@@ -7,16 +7,16 @@ Fortunately, you know something important about the ships trying to shoot you do
 
 If you can quickly calculate the target of the starfighters' laser beams to know how far off they'll be, you can trick them into shooting an asteroid, releasing dust, and concealing the rest of your escape.  Write a function solution(str_n) which, given the string representation of an integer n, returns the sum of `(floor(1*sqrt(2)) + floor(2*sqrt(2)) + ... + floor(n*sqrt(2)))` as a string. That is, for every number i in the range 1 to n, it adds up all of the integer portions of `i*sqrt(2)`.
 
-str_n will be a positive integer between **1 and 10^100, inclusive**. Since n can be very large **(up to 101 digits!)**, using just sqrt(2) and a loop won't work. Sometimes, it's easier to take a step back and concentrate not on what you have in front of you, but on what you don't.
+str_n will be a positive integer between **1 and 10<sup>100</sup>, inclusive**. Since n can be very large **(up to 101 digits!)**, using just sqrt(2) and a loop won't work. Sometimes, it's easier to take a step back and concentrate not on what you have in front of you, but on what you don't.
 
 > For example, if str_n was "5", the solution would be > calculated as  
 > 
->> floor(1*sqrt(2)) +  
->> floor(2*sqrt(2)) +  
->> floor(3*sqrt(2)) +  
->> floor(4*sqrt(2)) +  
->> floor(5*sqrt(2))  
->> = 1+2+4+5+7 = 19  
+>> ⌊1 *  √2⌋ +  
+>> ⌊2 *  √2⌋ +  
+>> ⌊3 *  √2⌋ +  
+>> ⌊4 *  √2⌋ +  
+>> ⌊5 *  √2⌋ =  
+>> 1+2+4+5+7 = 19  
 >
 >so the function would return "19".
 
